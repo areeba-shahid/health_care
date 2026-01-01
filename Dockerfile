@@ -1,15 +1,22 @@
-FROM node:18-alpine
-WORKDIR /app
-COPY package*.json ./
+# Stage 1: Build Frontend
+FROM node:18-alpine AS frontend-build
+WORKDIR /app/frontend
+COPY frontend/package*.json ./
 RUN npm install
-COPY . .
-EXPOSE 5173
-CMD ["npm", "run", "dev", "--", "--host"]
+COPY frontend/ ./
+RUN npm run build
 
+# Stage 2: Build Backend
 FROM node:18-alpine
 WORKDIR /app
-COPY package*.json ./
-RUN npm install
-COPY . .
+COPY backend/package*.json ./backend/
+RUN cd backend && npm install
+COPY backend/ ./backend/
+
+# Copy frontend build to backend public folder
+COPY --from=frontend-build /app/frontend/dist ./backend/public
+
 EXPOSE 5000
+
+WORKDIR /app/backend
 CMD ["npm", "start"]
