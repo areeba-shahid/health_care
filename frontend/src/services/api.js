@@ -1,7 +1,9 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://localhost:5000/api",
+  // Use relative path '/api' in production so it points to the Render URL
+  // Use 'http://localhost:5000/api' only during local development
+  baseURL: import.meta.env.PROD ? "/api" : "http://localhost:5000/api",
 });
 
 // Add token to requests
