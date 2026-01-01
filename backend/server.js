@@ -21,11 +21,13 @@ app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/doctors", require("./routes/doctorRoutes"));
 app.use("/api/appointments", require("./routes/appointmentRoutes"));
 app.use(express.static(path.join(__dirname, "public")));
-// Health check
-app.get("/", (req, res) => res.send("API is running..."));
+
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
+// Health check
+app.get("/", (req, res) => res.send("API is running..."));
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
